@@ -1,0 +1,6 @@
+{
+  "name": "Ruang Tumbuh – Digital Counseling Platform",
+  "description": "Platform layanan Bimbingan dan Konseling digital resmi Laboratorium BK Universitas Nahdlatul Ulama Al Ghazali (UNUGHA) untuk mahasiswa secara gratis.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

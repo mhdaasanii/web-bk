@@ -1,0 +1,405 @@
+{
+  "entities": {
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "Akun pengguna utama platform Ruang Tumbuh dengan peran RBAC.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "email": { "type": "string", "format": "email", "maxLength": 256 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "role": { "type": "string", "enum": ["student", "counselor", "admin"] },
+        "isActive": { "type": "boolean" },
+        "photoUrl": { "type": "string", "maxLength": 512 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "isActive", "createdAt", "updatedAt"]
+    },
+    "StudentProfile": {
+      "title": "StudentProfile",
+      "description": "Profil administratif mahasiswa UNUGHA.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "fullName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "nim": { "type": "string", "minLength": 4, "maxLength": 32 },
+        "studyProgram": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "semester": { "type": "integer" },
+        "phone": { "type": "string", "maxLength": 32 },
+        "emergencyContact": { "type": "string", "maxLength": 120 },
+        "privacyConsentAccepted": { "type": "boolean" },
+        "consentAcceptedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "fullName", "nim", "studyProgram", "semester", "privacyConsentAccepted", "createdAt", "updatedAt"]
+    },
+    "CounselorProfile": {
+      "title": "CounselorProfile",
+      "description": "Profil publik profesional konselor Laboratorium BK UNUGHA.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "fullName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "title": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "specializations": { "type": "array" },
+        "bio": { "type": "string", "maxLength": 1000 },
+        "photoUrl": { "type": "string", "maxLength": 512 },
+        "isActive": { "type": "boolean" },
+        "availability": { "type": "array" },
+        "maxWeeklySessions": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "fullName", "title", "specializations", "isActive", "availability", "createdAt", "updatedAt"]
+    },
+    "CounselorInvite": {
+      "title": "CounselorInvite",
+      "description": "Undangan akun konselor yang didaftarkan oleh Admin.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "maxLength": 256 },
+        "fullName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "title": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "specializations": { "type": "array" },
+        "bio": { "type": "string", "maxLength": 1000 },
+        "availability": { "type": "array" },
+        "isActive": { "type": "boolean" },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "fullName", "title", "specializations", "isActive", "availability", "createdBy", "createdAt", "updatedAt"]
+    },
+    "CounselingRequest": {
+      "title": "CounselingRequest",
+      "description": "Data administratif pengajuan konseling mahasiswa (terpisah dari cerita pribadi).",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "studentName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "nim": { "type": "string", "minLength": 4, "maxLength": 32 },
+        "studyProgram": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "semester": { "type": "integer" },
+        "category": { "type": "string", "enum": ["pribadi", "sosial", "belajar", "karier"] },
+        "method": { "type": "string", "enum": ["online", "offline"] },
+        "preferredDate": { "type": "string", "maxLength": 20 },
+        "preferredTime": { "type": "string", "maxLength": 20 },
+        "privacyConsent": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["new", "verifying", "approved", "awaiting_schedule", "scheduled", "completed", "cancelled", "rejected"] },
+        "assignedCounselorUid": { "type": "string", "maxLength": 128 },
+        "assignedCounselorName": { "type": "string", "maxLength": 120 },
+        "adminNote": { "type": "string", "maxLength": 500 },
+        "rejectionReason": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "studentName", "nim", "studyProgram", "semester", "category", "method", "preferredDate", "preferredTime", "privacyConsent", "status", "createdAt", "updatedAt"]
+    },
+    "RequestPrivateDetail": {
+      "title": "RequestPrivateDetail",
+      "description": "Gambaran singkat permasalahan mahasiswa (hanya mahasiswa dan konselor ditugaskan).",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "issueSummary": { "type": "string", "minLength": 5, "maxLength": 3000 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "issueSummary", "createdAt", "updatedAt"]
+    },
+    "CounselingSchedule": {
+      "title": "CounselingSchedule",
+      "description": "Jadwal sesi konseling yang ditetapkan admin.",
+      "type": "object",
+      "properties": {
+        "requestId": { "type": "string", "maxLength": 128 },
+        "studentUid": { "type": "string", "maxLength": 128 },
+        "studentName": { "type": "string", "maxLength": 120 },
+        "nim": { "type": "string", "maxLength": 32 },
+        "studyProgram": { "type": "string", "maxLength": 120 },
+        "counselorUid": { "type": "string", "maxLength": 128 },
+        "counselorName": { "type": "string", "maxLength": 120 },
+        "category": { "type": "string", "enum": ["pribadi", "sosial", "belajar", "karier"] },
+        "method": { "type": "string", "enum": ["online", "offline"] },
+        "date": { "type": "string", "maxLength": 20 },
+        "startTime": { "type": "string", "maxLength": 10 },
+        "endTime": { "type": "string", "maxLength": 10 },
+        "durationMinutes": { "type": "integer" },
+        "locationOrRoom": { "type": "string", "maxLength": 160 },
+        "status": { "type": "string", "enum": ["confirmed", "reschedule_requested", "in_progress", "completed", "cancelled"] },
+        "rescheduleNote": { "type": "string", "maxLength": 500 },
+        "videoRoomId": { "type": "string", "maxLength": 128 },
+        "startedAt": { "type": "string", "maxLength": 64 },
+        "endedAt": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["requestId", "studentUid", "studentName", "counselorUid", "counselorName", "category", "method", "date", "startTime", "endTime", "durationMinutes", "status", "createdAt", "updatedAt"]
+    },
+    "VideoRoom": {
+      "title": "VideoRoom",
+      "description": "Ruang video call terenkripsi untuk jadwal konseling online.",
+      "type": "object",
+      "properties": {
+        "scheduleId": { "type": "string", "maxLength": 128 },
+        "studentUid": { "type": "string", "maxLength": 128 },
+        "counselorUid": { "type": "string", "maxLength": 128 },
+        "roomCode": { "type": "string", "maxLength": 64 },
+        "status": { "type": "string", "enum": ["ready", "active", "ended", "expired"] },
+        "validFrom": { "type": "string", "maxLength": 64 },
+        "validUntil": { "type": "string", "maxLength": 64 },
+        "startedAt": { "type": "string", "maxLength": 64 },
+        "endedAt": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["scheduleId", "studentUid", "counselorUid", "roomCode", "status", "validFrom", "validUntil", "createdAt", "updatedAt"]
+    },
+    "VideoSessionLog": {
+      "title": "VideoSessionLog",
+      "description": "Log keikutsertaan ruang video call tanpa rekaman audio/video.",
+      "type": "object",
+      "properties": {
+        "roomId": { "type": "string", "maxLength": 128 },
+        "scheduleId": { "type": "string", "maxLength": 128 },
+        "participantUid": { "type": "string", "maxLength": 128 },
+        "participantRole": { "type": "string", "enum": ["student", "counselor"] },
+        "eventType": { "type": "string", "enum": ["joined", "reconnected", "left", "ended"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["roomId", "scheduleId", "participantUid", "participantRole", "eventType", "createdAt"]
+    },
+    "PrivateNote": {
+      "title": "PrivateNote",
+      "description": "Catatan konseling privat khusus konselor yang ditugaskan.",
+      "type": "object",
+      "properties": {
+        "scheduleId": { "type": "string", "maxLength": 128 },
+        "requestId": { "type": "string", "maxLength": 128 },
+        "studentUid": { "type": "string", "maxLength": 128 },
+        "studentName": { "type": "string", "maxLength": 120 },
+        "counselorUid": { "type": "string", "maxLength": 128 },
+        "counselorName": { "type": "string", "maxLength": 120 },
+        "sessionSummary": { "type": "string", "minLength": 1, "maxLength": 5000 },
+        "observations": { "type": "string", "maxLength": 5000 },
+        "followUpPlan": { "type": "string", "maxLength": 3000 },
+        "nextActionDate": { "type": "string", "maxLength": 20 },
+        "riskLevel": { "type": "string", "enum": ["rendah", "sedang", "tinggi"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["scheduleId", "studentUid", "studentName", "counselorUid", "sessionSummary", "riskLevel", "createdAt", "updatedAt"]
+    },
+    "FollowUp": {
+      "title": "FollowUp",
+      "description": "Rencana tindak lanjut dari konselor yang dibagikan kepada mahasiswa.",
+      "type": "object",
+      "properties": {
+        "scheduleId": { "type": "string", "maxLength": 128 },
+        "studentUid": { "type": "string", "maxLength": 128 },
+        "counselorUid": { "type": "string", "maxLength": 128 },
+        "counselorName": { "type": "string", "maxLength": 120 },
+        "planTitle": { "type": "string", "minLength": 2, "maxLength": 200 },
+        "actionItems": { "type": "string", "minLength": 2, "maxLength": 3000 },
+        "targetDate": { "type": "string", "maxLength": 20 },
+        "status": { "type": "string", "enum": ["aktif", "selesai"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["scheduleId", "studentUid", "counselorUid", "counselorName", "planTitle", "actionItems", "status", "createdAt", "updatedAt"]
+    },
+    "Journal": {
+      "title": "Journal",
+      "description": "Jurnal refleksi diri privat mahasiswa.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "content": { "type": "string", "minLength": 1, "maxLength": 6000 },
+        "reflectionPrompt": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "title", "content", "createdAt", "updatedAt"]
+    },
+    "MoodTracker": {
+      "title": "MoodTracker",
+      "description": "Catatan pelacakan suasana hati harian mahasiswa.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "mood": { "type": "string", "enum": ["senang", "tenang", "biasa", "cemas", "lelah", "sedih"] },
+        "intensity": { "type": "integer" },
+        "note": { "type": "string", "maxLength": 500 },
+        "date": { "type": "string", "maxLength": 20 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "mood", "intensity", "date", "createdAt"]
+    },
+    "Assessment": {
+      "title": "Assessment",
+      "description": "Asesmen awal non-diagnostik kebutuhan layanan BK mahasiswa.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "stressScore": { "type": "integer" },
+        "academicScore": { "type": "integer" },
+        "socialScore": { "type": "integer" },
+        "careerScore": { "type": "integer" },
+        "recommendedService": { "type": "string", "enum": ["pribadi", "sosial", "belajar", "karier"] },
+        "summaryLabel": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "stressScore", "academicScore", "socialScore", "careerScore", "recommendedService", "summaryLabel", "createdAt"]
+    },
+    "Article": {
+      "title": "Article",
+      "description": "Artikel edukasi kesehatan mental dan pengembangan diri BK UNUGHA.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 80 },
+        "excerpt": { "type": "string", "maxLength": 400 },
+        "content": { "type": "string", "maxLength": 15000 },
+        "coverImage": { "type": "string", "maxLength": 512 },
+        "authorName": { "type": "string", "maxLength": 120 },
+        "readMinutes": { "type": "integer" },
+        "published": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "category", "excerpt", "content", "authorName", "readMinutes", "published", "createdAt", "updatedAt"]
+    },
+    "SiteContent": {
+      "title": "SiteContent",
+      "description": "Konten profil Lab BK, layanan, dan pengaturan website yang dapat diedit admin.",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "maxLength": 64 },
+        "labName": { "type": "string", "maxLength": 200 },
+        "aboutDescription": { "type": "string", "maxLength": 3000 },
+        "vision": { "type": "string", "maxLength": 1500 },
+        "mission": { "type": "string", "maxLength": 2500 },
+        "goals": { "type": "string", "maxLength": 2500 },
+        "address": { "type": "string", "maxLength": 400 },
+        "contactEmail": { "type": "string", "maxLength": 160 },
+        "contactPhone": { "type": "string", "maxLength": 64 },
+        "serviceHours": { "type": "string", "maxLength": 200 },
+        "retentionDays": { "type": "integer" },
+        "videoWindowMinutesBefore": { "type": "integer" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["key", "updatedAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Notifikasi real-time untuk mahasiswa, konselor, dan admin.",
+      "type": "object",
+      "properties": {
+        "targetUid": { "type": "string", "maxLength": 128 },
+        "targetRole": { "type": "string", "enum": ["student", "counselor", "admin"] },
+        "title": { "type": "string", "maxLength": 160 },
+        "message": { "type": "string", "maxLength": 500 },
+        "type": { "type": "string", "enum": ["request", "schedule", "video", "session", "system"] },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetUid", "targetRole", "title", "message", "type", "isRead", "createdAt"]
+    },
+    "AdminActivityLog": {
+      "title": "AdminActivityLog",
+      "description": "Jejak audit aktivitas administratif platform Ruang Tumbuh.",
+      "type": "object",
+      "properties": {
+        "adminUid": { "type": "string", "maxLength": 128 },
+        "adminEmail": { "type": "string", "maxLength": 256 },
+        "action": { "type": "string", "maxLength": 120 },
+        "targetType": { "type": "string", "maxLength": 80 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["adminUid", "adminEmail", "action", "targetType", "targetId", "details", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{uid}": {
+      "schema": { "$ref": "#/entities/UserAccount" },
+      "description": "Daftar UID administrator terverifikasi."
+    },
+    "/users/{uid}": {
+      "schema": { "$ref": "#/entities/UserAccount" },
+      "description": "Akun pengguna dan peran RBAC."
+    },
+    "/studentProfiles/{uid}": {
+      "schema": { "$ref": "#/entities/StudentProfile" },
+      "description": "Profil administratif mahasiswa."
+    },
+    "/counselorProfiles/{uid}": {
+      "schema": { "$ref": "#/entities/CounselorProfile" },
+      "description": "Profil publik konselor Lab BK UNUGHA."
+    },
+    "/counselorInvites/{inviteEmail}": {
+      "schema": { "$ref": "#/entities/CounselorInvite" },
+      "description": "Daftar konselor yang didaftarkan admin berdasarkan email."
+    },
+    "/counselingRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/CounselingRequest" },
+      "description": "Pengajuan konseling mahasiswa (metadata administratif)."
+    },
+    "/counselingRequests/{requestId}/privateDetail/{docId}": {
+      "schema": { "$ref": "#/entities/RequestPrivateDetail" },
+      "description": "Isi keluhan/cerita pribadi pengajuan konseling (terisolasi dari Admin)."
+    },
+    "/counselingSchedules/{scheduleId}": {
+      "schema": { "$ref": "#/entities/CounselingSchedule" },
+      "description": "Jadwal konseling mahasiswa dan konselor."
+    },
+    "/videoRooms/{roomId}": {
+      "schema": { "$ref": "#/entities/VideoRoom" },
+      "description": "Metadata ruang video call konseling online."
+    },
+    "/videoSessionLogs/{logId}": {
+      "schema": { "$ref": "#/entities/VideoSessionLog" },
+      "description": "Log kehadiran sesi video konseling."
+    },
+    "/privateNotes/{noteId}": {
+      "schema": { "$ref": "#/entities/PrivateNote" },
+      "description": "Catatan konseling privat milik konselor."
+    },
+    "/followUps/{followUpId}": {
+      "schema": { "$ref": "#/entities/FollowUp" },
+      "description": "Rencana tindak lanjut untuk mahasiswa."
+    },
+    "/journals/{journalId}": {
+      "schema": { "$ref": "#/entities/Journal" },
+      "description": "Jurnal refleksi diri privat mahasiswa."
+    },
+    "/moodTrackers/{moodId}": {
+      "schema": { "$ref": "#/entities/MoodTracker" },
+      "description": "Pelacakan mood harian mahasiswa."
+    },
+    "/assessments/{assessmentId}": {
+      "schema": { "$ref": "#/entities/Assessment" },
+      "description": "Hasil asesmen awal non-diagnostik mahasiswa."
+    },
+    "/articles/{articleId}": {
+      "schema": { "$ref": "#/entities/Article" },
+      "description": "Artikel edukasi BK dan kesehatan mental."
+    },
+    "/siteContent/{docId}": {
+      "schema": { "$ref": "#/entities/SiteContent" },
+      "description": "Konten profil Lab BK, layanan, dan pengaturan."
+    },
+    "/notifications/{notifId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "Notifikasi otomatis sistem."
+    },
+    "/adminActivityLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AdminActivityLog" },
+      "description": "Log audit aktivitas administratif."
+    }
+  }
+}
